@@ -1,6 +1,7 @@
 Flask
 firebase-admin
 langchain
+langchain-groq
 langchain-community
 requests
 gunicorn  # Serveur WSGI pour Heroku
