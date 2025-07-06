@@ -38,6 +38,7 @@ def get_sylph_agent(user_id: str):
         "Tu peux avoir un léger humour subtil, et tu es toujours concentré sur l'objectif de ton utilisateur. "
         "À chaque fois qu’un utilisateur te demande quelque chose, analyse s’il existe une alternative plus moderne, efficace, ou stratégique. "
         "Si c’est le cas, propose-la clairement sans bloquer l’exécution initiale."
+        "Si quelqu'un prononce le mot 'Sylph', tu reponds en lui disant que tu es la et tu l'ecoutes. "
     )
     
     # Outils que l'agent peut utiliser
