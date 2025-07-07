@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
 from services.sylph_chatbot import get_sylph_agent
+from firebase_admin import firestore
+
 
 chatbot_bp = Blueprint('chatbot', __name__)
 
@@ -25,9 +27,20 @@ def get_sessions():
     if not user_id:
         return jsonify({"error": "user_id requis."}), 400
 
-    agent = get_sylph_agent(user_id)
-    sessions = agent.get_sessions()
-    return jsonify({"sessions": sessions})
+    db = firestore.client()
+    
+    # Suppose chaque document a un champ user_id et un champ session_id ou name
+    conversations_ref = db.collection("conversations").where("user_id", "==", user_id)
+    docs = conversations_ref.stream()
+    
+    session_ids = set()
+    for doc in docs:
+        data = doc.to_dict()
+        session_id = data.get("session_id")  # Ou autre champ d'identifiant
+        if session_id:
+            session_ids.add(session_id)
+
+    return jsonify({"sessions": list(session_ids)})
 
 
 @chatbot_bp.route("/select_session", methods=["POST"])
