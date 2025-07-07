@@ -12,14 +12,14 @@ from tools.suggestion_engine import suggest_improvements
 # Initialiser le LLM Groq avec votre clé API et le modèle
 llm = ChatGroq(api_key=GROQ_API_KEY, model="llama3-70b-8192")
 
-def get_sylph_agent(user_id: str):
+def get_sylph_agent(user_id: str, session_id: str ):
     """Retourne un agent Sylph prêt à interagir avec l'utilisateur."""
     
     # Connexion à Firestore et récupération de l'historique du chat
     firestore_client = firestore.client()  # Assurez-vous que Firebase est bien initialisé avant l'appel
     chat_history = FirestoreChatMessageHistory(
             collection_name="conversations",  # Nom de la collection dans Firestore
-            session_id=user_id,             # UID de l'utilisateur comme session_id
+            session_id=session_id,             # UID de l'utilisateur comme session_id
             user_id=user_id,                # Utiliser l'UID comme user_id
             firestore_client=None            # Si tu as un client Firestore personnalisé, tu peux le passer ici
         )    
