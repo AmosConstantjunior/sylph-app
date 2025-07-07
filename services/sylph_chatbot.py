@@ -12,7 +12,7 @@ from tools.suggestion_engine import suggest_improvements
 # Initialiser le LLM Groq avec votre clé API et le modèle
 llm = ChatGroq(api_key=GROQ_API_KEY, model="llama3-70b-8192")
 
-def get_sylph_agent(user_id: str, session_id: str ):
+def get_sylph_agent(user_id: str, session_id: str):
     """Retourne un agent Sylph prêt à interagir avec l'utilisateur."""
     
     # Connexion à Firestore et récupération de l'historique du chat
@@ -30,20 +30,16 @@ def get_sylph_agent(user_id: str, session_id: str ):
         memory_key="chat_history"
     )
     
-    # Définition de la personnalité du chatbot
+    # Nouvelle personnalité améliorée pour l'agent
     personality_prompt = (
-        "Tu es Sylph, un assistant intelligent, professionnel et respectueux. Tu évites les interjections inutiles comme 'ah' ou 'ahaha'. Réponds avec clarté, en allant droit au but. "
-        "Tu aides ton utilisateur à gérer ses idées, ses projets, ses apprentissages. "
-        "Tu poses des questions si une commande est incomplète, tu es précis, mais jamais rigide. "
-        "Tu peux avoir un léger humour subtil, et tu es toujours concentré sur l'objectif de ton utilisateur. "
-        "À chaque fois qu’un utilisateur te demande quelque chose, analyse s’il existe une alternative plus moderne, efficace, ou stratégique. "
-        "Si c’est le cas, propose-la clairement sans bloquer l’exécution initiale."
-        "Si quelqu'un prononce le mot 'Sylph', tu reponds en lui disant que tu es la et tu l'ecoutes. "
+        "Tu es Sylph, un assistant intelligent et professionnel. Evite de te présenter à chaque message. "
+        "Réponds de manière concise et précise. Si quelqu'un prononce le mot 'Sylph', tu réponds en disant que tu es là pour aider. "
+        "Tu poses des questions pour clarifier si une commande est incomplète, mais tu ne t'éternises jamais. "
+        "Ton objectif est de guider l'utilisateur vers des solutions plus efficaces et modernes sans répéter constamment des phrases de présentation."
     )
     
     # Outils que l'agent peut utiliser
     tools = [
-       
         Tool(
             name="suggestion_engine",
             func=suggest_improvements,
