@@ -28,20 +28,33 @@ def get_sessions():
         return jsonify({"error": "user_id requis."}), 400
 
     db = firestore.client()
-    
-    # Suppose chaque document a un champ user_id et un champ session_id ou name
     conversations_ref = db.collection("conversations").where("user_id", "==", user_id)
     docs = conversations_ref.stream()
-    
-    session_ids = set()
+
+    sessions = []
+    seen_ids = set()
+
     for doc in docs:
         data = doc.to_dict()
-        session_id = data.get("id")  # Ou autre champ d'identifiant
-        if session_id:
-            session_ids.add(session_id)
 
-    return jsonify({"sessions": list(session_ids)})
+        session_id = data.get("id")  # ou doc.id si tu veux
+        if not session_id or session_id in seen_ids:
+            continue
+        seen_ids.add(session_id)
 
+        # 🧠 Tenter de trouver le premier message humain pour nommer la session
+        name = "Session"
+        for msg in data.get("messages", []):
+            if msg.get("type") == "human":
+                name = msg["data"].get("content", "Session")
+                break
+
+        sessions.append({
+            "id": session_id,
+            "name": name[:50]  # tronque si c'est trop long
+        })
+
+    return jsonify({"sessions": sessions})
 
 @chatbot_bp.route("/select_session", methods=["POST"])
 def select_session():
