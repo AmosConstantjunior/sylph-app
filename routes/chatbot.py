@@ -56,15 +56,19 @@ def get_sessions():
 
     return jsonify({"sessions": sessions})
 
-@chatbot_bp.route("/select_session", methods=["POST"])
-def select_session():
-    data = request.get_json()
-    user_id = data.get("user_id")
-    session_id = data.get("id")
-
-    if not user_id or not session_id:
-        return jsonify({"error": "user_id et session_id requis."}), 400
-
-    agent = get_sylph_agent(user_id)
-    agent.set_session(session_id)
-    return jsonify({"message": f"Session {session_id} sélectionnée."})
+@chatbot_bp.route("/select_session/<session_id>/messages", methods=["GET"])
+def get_messages_for_session(session_id):
+    db = firestore.client()
+    
+    # Recherche la session dans Firestore avec son ID
+    session_ref = db.collection("conversations").document(session_id)
+    session = session_ref.get()
+    
+    if not session.exists:
+        return jsonify({"error": "Session non trouvée."}), 404
+    
+    data = session.to_dict()
+    messages = data.get("messages", [])
+    
+    # Renvoyer les messages de la session
+    return jsonify({"messages": messages})
