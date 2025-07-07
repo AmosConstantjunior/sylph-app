@@ -36,7 +36,7 @@ def get_sessions():
     session_ids = set()
     for doc in docs:
         data = doc.to_dict()
-        session_id = data.get("session_id")  # Ou autre champ d'identifiant
+        session_id = data.get("id")  # Ou autre champ d'identifiant
         if session_id:
             session_ids.add(session_id)
 
@@ -47,7 +47,7 @@ def get_sessions():
 def select_session():
     data = request.get_json()
     user_id = data.get("user_id")
-    session_id = data.get("session_id")
+    session_id = data.get("id")
 
     if not user_id or not session_id:
         return jsonify({"error": "user_id et session_id requis."}), 400
